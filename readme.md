@@ -20,3 +20,8 @@ This OS provides:
     * Multi-block caching
 * A new built-in shell, `xsh`, to make use of all the above features.
 
+Repo contents:
+* `device/`: Hardware libaries
+* `kernel/`: Kernel mode programs, including the kernel and file system
+* `user/`: User mode programs such as `xsh`, `philosophers`, and `cat`
+
