@@ -1,0 +1,59 @@
+/*
+ * This file and its associated header file were not completed and so not included in the finished OS.\
+ * 
+ * Virtual file system layer to abstract pipes and virtual devices, along with real FS, to one
+ * file hierarchy
+ */
+
+#include "vfs.h"
+#include <string.h>
+
+vfs_volume* vfs_getvol(vfs_root* vfs, char* mnt) {
+    for (int i = 0; i < 8; ++i) {
+        if (vfs->volumes[i] != NULL
+            && (strncmp(vfs->volumes[i]->name, mnt, 28) == 0)) {
+                return &vfs->volumes[i];
+        }
+    }
+    return NULL;
+}   
+
+bool vfs_isfile(vfs_root* vfs, char* path) {
+    // Start from char 1, 0 will be '/'
+    vfs_volume* vol = vfs_getvol(vfs, ++path);
+    char* rest = path;
+    while (*path != '\0' && *path != '/') ++path;
+    if (*path == '/') ++path;
+    switch (vol->fs) {
+        case KFS:
+            break;
+        case CWFS2:
+            return fs2_isftype((fs2_volume_t*) vol->fs_volume_metastruct, path, FS2_FTYPE_FILE);
+            break;
+        default:
+            return false;
+    }
+}
+
+bool vfs_isdir (vfs_root* vfs, char* path) {
+    // Start from char 1, 0 will be '/'
+    vfs_volume* vol = vfs_getvol(vfs, ++path);
+    char* rest = path;
+    while (*path != '\0' && *path != '/') ++path;
+    if (*path == '/') ++path;
+    switch (vol->fs) {
+        case KFS:
+            break;
+        case CWFS2:
+            return fs2_isftype((fs2_volume_t*) vol->fs_volume_metastruct, path, FS2_FTYPE_DIR);
+            break;
+        default:
+            return false;
+    }
+}
+bool vfs_mkfile(vfs_root* vfs, char* path);
+bool vfs_mkdir (vfs_root* vfs, char* path);
+bool vfs_rm    (vfs_root* vfs, char* path);
+int  vfs_ls    (vfs_root* vfs, char* path, char* out, int nchars);
+int  vfs_read  (vfs_root* vfs, char* path, char* out, int nbytes, int cursor);
+int  vfs_write (vfs_root* vfs, char* path, char*  in, int nbytes, int cursor);

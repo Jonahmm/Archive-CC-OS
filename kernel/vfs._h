@@ -1,0 +1,62 @@
+/* A read-write FS must support 
+    MKFILE (path)
+    MKDIR  (path)
+    LS     (path, output, n)
+    RM     (path)
+    Read   (path, output, n)
+    Write  (path,  input, n)
+    ISFILE (path)
+    ISDIR  (path)
+    CHMOD  (path, perm)
+   A read-only FS must support (args as above)
+    LS
+    Read
+    ISFILE
+    ISDIR
+*/
+#include <stdbool.h>
+#include "fs2.h"
+
+// SUPPORTED FILE SYSTEMS
+typedef enum {
+    KFS,
+    CWFS2
+    // ...
+} vfs_fs;
+
+
+typedef bool (*vfs_pathtobool_op) (char* path);
+typedef bool (*vfs_out_op)        (char* path, char* data, int n);
+typedef int  (*vfs_read_write_op) (char* path, char* data, int n, int cursor);
+
+typedef struct {
+    vfs_pathtobool_op   mkfile, mkdir, isfile, isdir, rm;
+    vfs_read_write_op   read, write;
+    vfs_out_op          ls;
+} vfs_rwfs_ops;
+
+typedef struct {
+    vfs_pathtobool_op   isfile, isdir;
+    vfs_read_write_op   read;
+    vfs_out_op          ls;
+} vfs_rfs_ops;
+
+typedef struct {
+    vfs_fs fs;
+    void* fs_volume_metastruct;
+    void* fs_ops;
+    char  name[28];
+} vfs_volume;
+
+typedef struct {
+    vfs_volume* volumes[8];
+} vfs_root;
+
+bool vfs_isfile(vfs_root* vfs, char* path);
+bool vfs_isdir (vfs_root* vfs, char* path);
+bool vfs_mkfile(vfs_root* vfs, char* path);
+bool vfs_mkdir (vfs_root* vfs, char* path);
+bool vfs_rm    (vfs_root* vfs, char* path);
+int  vfs_ls    (vfs_root* vfs, char* path, char* out, int nchars);
+int  vfs_read  (vfs_root* vfs, char* path, char* out, int nbytes, int cursor);
+int  vfs_write (vfs_root* vfs, char* path, char*  in, int nbytes, int cursor);
