@@ -1,7 +1,7 @@
 # Archive: Concurrent Computing OS Coursework
 
 *Note: Unfortunately the original notes document submitted with this coursework was lost when SAFE was
-decomissioned in October. The below list is not a full technical specification but does a good job of
+decommissioned in October. The below list is not a full technical specification but does a good job of
 outlining the functionality of the OS.*
 
 This OS provides:
@@ -11,7 +11,7 @@ This OS provides:
 * `fork()`, `exec()`, `kill()`, `yield()` and `nice()` system calls for process handling
     * New `execx()` system call to start a program with an argument
 * Semaphores to lock system resources, supported by two new system calls
-* Per-process file descriptors
+* Per-process file descriptors supporting redirection
 * Pipes
 * An inode-based file system supporting
     * Directories and hierarchy
